@@ -1,20 +1,9 @@
-﻿Построение начато 9/30/2015 10:52:42 AM.
-     1>Проект "C:\Users\User\Desktop\Tic-Tac-Toe-master\Tic-Tac-Toe-master\SDLForHabr\SDLForHabr\SDLForHabr.vcxproj" в узле 2 (целевые объекты Build).
-     1>ClCompile:
-         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
-         main.cpp
-       Link:
-         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\User\Desktop\Tic-Tac-Toe-master\Tic-Tac-Toe-master\SDLForHabr\Release\SDLForHabr.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\User\Desktop\Tic-Tac-Toe-master\Tic-Tac-Toe-master\SDLForHabr\Release\SDLForHabr.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\User\Desktop\Tic-Tac-Toe-master\Tic-Tac-Toe-master\SDLForHabr\Release\SDLForHabr.lib" /MACHINE:X86 /SAFESEH Release\Game.obj
-         Release\Graphics.obj
-         Release\Image.obj
-         Release\Input.obj
-         Release\main.obj
-         Release\Screen.obj
-         Создание кода
-         Создание кода завершено
-         SDLForHabr.vcxproj -> C:\Users\User\Desktop\Tic-Tac-Toe-master\Tic-Tac-Toe-master\SDLForHabr\Release\SDLForHabr.exe
-     1>Построение проекта "C:\Users\User\Desktop\Tic-Tac-Toe-master\Tic-Tac-Toe-master\SDLForHabr\SDLForHabr\SDLForHabr.vcxproj" завершено (целевые объекты Build).
+﻿Построение начато 11/22/2015 6:44:02 PM.
+     1>Проект "C:\Users\User\Desktop\Game_Lines\Lines_SDL\Lines_SDL\Lines_SDL.vcxproj" в узле 2 (целевые объекты Build).
+     1>Link:
+         Lines_SDL.vcxproj -> C:\Users\User\Desktop\Game_Lines\Lines_SDL\Lines_SDL\Release\Lines_SDL.exe
+     1>Построение проекта "C:\Users\User\Desktop\Game_Lines\Lines_SDL\Lines_SDL\Lines_SDL.vcxproj" завершено (целевые объекты Build).
 
 Построение успешно завершено.
 
-Затраченное время: 00:00:02.00
+Затраченное время: 00:00:01.40

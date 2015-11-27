@@ -1,20 +1,19 @@
 #include "Project.h"
 
-// Размер поля. Размер шариков должен быть 40x40 пикселей
+// The size of the field. Beads size should be 40x40 pixels
 const int N=9;
 int Scale=45;
 bool selectBall=false;
-bool animationRun=false;
 bool START=true;
 int width=N*Scale+2;
 int height=N*Scale+54;
-int x(0),y(0);
 int count_bubbles=0;
 int ballWidth=40;
 int ballHeight=40;
 int top_margin=56;
 int left_margin=6;
 int score=0, countScore=0;
+int currentX(0), currentY(0), previousX(0), previousY(0);
 
 
 
@@ -26,13 +25,13 @@ private:
     Graphics* graphics;
 	
 
-    // Изображения фона и шариков 
+    
     Image* back;
 	Image* nxtTtr;
 	Image* digits;
     (Image* ball)[7];
 
-    // Массив, обозначающий поле
+    
     int field[N][N];
 	int workField[N][N];
 	int futureAdding[3];
@@ -45,7 +44,7 @@ private:
 
 	void StartSettings()
     {
-        // Берем объекты Graphics и Input и устанавливаем заголовок окна
+        // Take a Graphics object and Input and set the window title
 
         input = game->GetInput();
         graphics = game->GetGraphics();
@@ -54,7 +53,7 @@ private:
 
     void LoadingImage()
     {
-        // Загрузка изображений
+        // Load image
 		back = graphics->NewImage("data/BKG.bmp");
 		nxtTtr = graphics->NewImage("data/NEXT.bmp");
 		digits = graphics->NewImage("data/DIGITS.bmp");
@@ -66,7 +65,7 @@ private:
 		ball[5] = graphics->NewImage("data/BALLS6.bmp",255,255,255);
 		ball[6] = graphics->NewImage("data/BALLS7.bmp",255,255,255);
     }
-	// Заполнение и добавление шариков в поле
+	// Filling and adding balls in the box
 	void createField()
 	{		
 		int numberColumn(0), numberLine(0);
@@ -88,60 +87,27 @@ private:
 			}
 			START=false;
 		}
-		else if(score==0&&count_bubbles==N*N-2)
-		{
-			int i=0;
-			while(i<2)
-			{
-				numberColumn=rand()%9;
-				numberLine=rand()%9;
-				if(field[numberColumn][numberLine]==0)
-				{
-					field[numberColumn][numberLine]=futureAdding[i];
-					/*Coordinate.push_back(numberColumn);
-					Coordinate.push_back(numberLine);
-					coordAdd.push_back(Coordinate);
-					Coordinate.clear();*/
-					count_bubbles++;
-					i++;
-				}
-			}
-		}
-		else if(score!=0&&count_bubbles==N*N-1)
-		{
-			while(1)
-			{
-				numberColumn=rand()%9;
-				numberLine=rand()%9;
-				if(field[numberColumn][numberLine]==0)
-				{
-					field[numberColumn][numberLine]=futureAdding[0];
-					/*Coordinate.push_back(numberColumn);
-					Coordinate.push_back(numberLine);
-					coordAdd.push_back(Coordinate);
-					Coordinate.clear();*/
-					count_bubbles++;
-				}
-
-			}
-		}
 		else
 		{	
 			int i=0;
 			while(i<3)
 			{
-				numberColumn=rand()%9;
-				numberLine=rand()%9;
-				if (field[numberColumn][numberLine]==0)
+				if(count_bubbles!=N*N)
 				{
-					field[numberColumn][numberLine]=futureAdding[i];
-					/*Coordinate.push_back(numberColumn);
-					Coordinate.push_back(numberLine);
-					coordAdd.push_back(Coordinate);
-					Coordinate.clear();*/
-					count_bubbles++;
-					i++;
+					numberColumn=rand()%9;
+					numberLine=rand()%9;
+					if (field[numberColumn][numberLine]==0)
+					{
+						field[numberColumn][numberLine]=futureAdding[i];
+						count_bubbles++;
+						i++;
+						Coordinate.push_back(numberColumn);
+						Coordinate.push_back(numberLine);
+						coordAdd.push_back(Coordinate);
+						Coordinate.clear();
+					}
 				}
+				else{break;}
 			}
 			for(int i=0; i<3; i++)
 			{
@@ -150,11 +116,27 @@ private:
 		}
 	}
 	
-	//Проверка на линию
+	//check on line
 	bool checkOnLine(int x, int y)
 	{
 		int rightX=x, upY=y, leftX=x, downY=y;
-		int left(1), right(1), up(1), down(1), height(0), width(0);
+		int left(1), right(1), up(1), down(1), leftuUp(1), leftDown(1), rightUp(1), rightDown(1), height(0), width(0), diagonalBeginEnd(0), diagonalEndBegin(0);
+		/*while(x-left!=-1&&y-up!=-1&&field[x][y]==field[x-left][y-up])
+		{
+
+		}
+		while(x+right!=N&&y+down!=N&&field[x][y]==field[x+right][y+down])
+		{
+
+		}
+		while(x-left!=-1&&y+down!=N&&field[x][y]==field[x-left][y+down])
+		{
+
+		}
+		while(x+right!=N&&y-up!=-1&&field[x][y]==field[x+right][y-up])
+		{
+
+		}*/
 		while(x-left!=-1&&field[x][y]==field[x-left][y])
 		{
 			leftX=x-left;
@@ -328,6 +310,7 @@ private:
 			
 			if(find==false)
 			{
+				coordPath.clear();
 				return true;
 			}
 			find=false;
@@ -342,7 +325,7 @@ private:
 	
 	void Reset()
     {
-        // Очистка поля и вывод фона
+        // Cleaning the field and concluded background
 		if(GameOver()==false)
 		{
 			for(int i = 0; i < N; i++)
@@ -393,7 +376,7 @@ private:
 
     void GameOverHandle(bool over)
     {
-        // Обработка конца игры
+        // Processing end of the game
 
         char* message;
 
@@ -402,17 +385,40 @@ private:
         case 1:
             message = "Желаете сыграть еще раз?";
             break;
-        // Если игра не окончена, возвращаемся из функции
+        // If the game is not over, we return from the function
         default:
             return;
         }
 
-        // Спрашиваем пользователя, хочет ли он сыграть еще раз
+        // Asks the user whether he wants to play again
         if(MessageBox(0,message,"Игра окончена",MB_YESNO) == IDYES)
             Reset();
         else
             game->Exit();
     }
+
+	void redrawScreen()
+	{
+		graphics->DrawImage(back,0,0);
+		for(int i=0; i<3; i++)
+		{
+			graphics->DrawImage(nxtTtr, (Scale*3+left_margin)+Scale*i+5, 20, (futureAdding[i]-100)*25, 0, 25, 25);
+		}
+		for(int i = 0; i < N; i++)
+		{
+			for(int j = 0; j < N; j++)
+			{
+				if(field[i][j] != 0)
+				{
+					graphics->DrawImage(ball[field[i][j]-100], (i * Scale)+left_margin, (j * Scale)+top_margin, 0, 0, ballWidth, ballHeight);
+				}
+			}
+		}
+		for(int i=0; i<3; i++)
+		{
+			graphics->DrawImage(digits, 7*Scale+left_margin+i*24, left_margin, digitsScore[i]*18, 0, 18, 35);
+		}
+	}
 
 public:
 	void Start()
@@ -429,177 +435,104 @@ public:
 		// if left mouse button press---------------------------------------
 		if(input->IsMouseButtonDown(1))
 		{
-			// if ball select------------------------------------------------------------
-			if(selectBall)
+			//determine in which cage poked his arm
+			currentX=(input->GetButtonDownCoords().x-left_margin)/Scale;
+			currentY=(input->GetButtonDownCoords().y-top_margin) /Scale;
+			//if no ball is not selected
+			if(selectBall==false)
 			{
-				// if select other ball-----------------------------------------------------------------------------------------
-				if(field[(input->GetButtonDownCoords().x-left_margin)/Scale][(input->GetButtonDownCoords().y-top_margin)/Scale]!=0)
+				//if the cell is not empty
+				if(field[currentX][currentY]!=0)
 				{
-					x=(input->GetButtonDownCoords().x-left_margin)/Scale;// remember coordinate Х in array field
-					y=(input->GetButtonDownCoords().y-top_margin) /Scale;// remember coordinate У in array field
-					createWave(x,y);// create wave
-					// redraw 
-					graphics->DrawImage(back,0,0);
-					for(int i=0; i<3; i++)
-					{
-						graphics->DrawImage(nxtTtr, (Scale*3+left_margin)+Scale*i+5, 20, (futureAdding[i]-100)*25, 0, 25, 25);
-					}
-					for(int i = 0; i < N; i++)
-					{
-						for(int j = 0; j < N; j++)
-						{
-							if(field[i][j] != 0)
-							{
-								graphics->DrawImage(ball[field[i][j]-100], (i * Scale)+left_margin, (j * Scale)+top_margin, 0, 0, ballWidth, ballHeight);
-							}
-						}
-					}
-					for(int i=0; i<3; i++)
-					{
-						graphics->DrawImage(digits, 7*Scale+left_margin+i*24, left_margin, digitsScore[i]*18, 0, 18, 35);
-					}
-					graphics->Click_Animation(ball[field[x][y]-100], (x * Scale)+left_margin, (y * Scale)+top_margin, 0, 0, ballWidth, ballHeight, 5);
+					selectBall=true;
+					createWave(currentX,currentY);
+					redrawScreen();
+					graphics->Click_Animation(ball[field[currentX][currentY]-100], (currentX * Scale)+left_margin, (currentY * Scale)+top_margin, 0, 0, ballWidth, ballHeight, 5);
 					graphics->Flip();
-					animationRun=true;
+					previousX=currentX;
+					previousY=currentY;
 				}
-				// 
-				else
+			}
+			else
+			{
+				//if empty cell
+				if(field[currentX][currentY]==0)
 				{
-					//функция проверки пути
-					buildPath(x, y, (input->GetButtonDownCoords().x-left_margin)/Scale, (input->GetButtonDownCoords().y-top_margin)/Scale);
-					if(buildPath(x, y, (input->GetButtonDownCoords().x-left_margin)/Scale, (input->GetButtonDownCoords().y-top_margin)/Scale)==false)
+					if(buildPath(previousX, previousY, currentX, currentY)==false)
 					{
-						//анимация перемещения с (х,у) в точку((input->GetButtonDownCoords().x-left_margin)/Scale,  (input->GetButtonDownCoords().y-top_margin)/Scale)
-						graphics->DrawImage(back,0,0);
-						for(int i=0; i<3; i++)
-						{
-							graphics->DrawImage(nxtTtr, (Scale*3+left_margin)+Scale*i+5, 20, (futureAdding[i]-100)*25, 0, 25, 25);
-						}
-						for(int i = 0; i < N; i++)
-						{
-							for(int j = 0; j < N; j++)
-							{
-								if(field[i][j] != 0)
-								{
-									graphics->DrawImage(ball[field[i][j]-100], (i * Scale)+left_margin, (j * Scale)+top_margin, 0, 0, ballWidth, ballHeight);
-								}
-							}
-						}
-						for(int i=0; i<3; i++)
-						{
-							graphics->DrawImage(digits, 7*Scale+left_margin+i*24, left_margin, digitsScore[i]*18, 0, 18, 35);
-						}
-						graphics->AnimationMovingBall(ball[field[x][y]-100], coordPath, 0, 0, ballWidth, ballHeight, 5);
+						//move the ball in it
+						buildPath(previousX, previousY, currentX, currentY);
+						redrawScreen();
+						graphics->AnimationMovingBall(ball[field[previousX][previousY]-100], coordPath, 0, 0, ballWidth, ballHeight, 5);
 						graphics->Flip();
 						coordPath.clear();
-						//функция проверки на линию(если линия, то анимация сгорания; если нет добавление 3 шариков)
-						field[(input->GetButtonDownCoords().x-left_margin)/Scale][(input->GetButtonDownCoords().y-top_margin)/Scale]=field[x][y];
-						checkOnLine((input->GetButtonDownCoords().x-left_margin)/Scale, (input->GetButtonDownCoords().y-top_margin)/Scale);
-						field[x][y]=0;
-						if(checkOnLine((input->GetButtonDownCoords().x-left_margin)/Scale,(input->GetButtonDownCoords().y-top_margin)/Scale)==true)
+						field[currentX][currentY]=field[previousX][previousY];
+						field[previousX][previousY]=0;
+						//check whether the line is not built from 5 and more balls
+						checkOnLine(currentX, currentY);
+						redrawScreen();
+						graphics->Flip();
+						//if line lined
+						if(checkOnLine(currentX, currentY)==true)
 						{
 							count_bubbles-=countScore;
 							score+=countScore;
 							digitsScore[0]=score/100;
 							digitsScore[1]=(score-digitsScore[0]*100)/10;
 							digitsScore[2]=score-digitsScore[0]*100-digitsScore[1]*10;
-							graphics->DrawImage(back,0,0);
-							for(int i=0; i<3; i++)
-							{
-								graphics->DrawImage(nxtTtr, (Scale*3+left_margin)+Scale*i+5, 20, (futureAdding[i]-100)*25, 0, 25, 25);
-							}
-							for(int i = 0; i < N; i++)
-							{
-								for(int j = 0; j < N; j++)
-								{
-									if(field[i][j] != 0)
-									{
-										graphics->DrawImage(ball[field[i][j]-100], (i * Scale)+left_margin, (j * Scale)+top_margin, 0, 0, ballWidth, ballHeight);
-									}
-								}
-							}
-							for(int i=0; i<3; i++)
-							{
-								graphics->DrawImage(digits, 7*Scale+left_margin+i*24, left_margin, digitsScore[i]*18, 0, 18, 35);
-							}
-							graphics->AnimationDeleteLine(ball[field[(input->GetButtonDownCoords().x-left_margin)/Scale][(input->GetButtonDownCoords().y-top_margin)/Scale]-100], coordCheck, 6*ballWidth , 0, ballWidth, ballHeight, 11);
+							redrawScreen();
+							graphics->AnimationDeleteLine(ball[field[currentX][currentY]-100], coordCheck, 7*ballWidth , 0, ballWidth, ballHeight, 10);
 							graphics->Flip();
-							for(int i=0; i<coordCheck.size(); i++)
+							//remove the line
+							for(unsigned int i=0; i<coordCheck.size(); i++)
 							{
 								field[coordCheck[i][0]][coordCheck[i][1]]=0;
 							}
+							coordCheck.clear();
 						}
 						else
 						{
+							//add a few balls in the empty cells
 							createField();
-						}
-						coordCheck.clear();// clear vector
-						graphics->DrawImage(back,0,0);
-						for(int i=0; i<3; i++)
-						{
-							graphics->DrawImage(nxtTtr, (Scale*3+left_margin)+Scale*i+5, 20, (futureAdding[i]-100)*25, 0, 25, 25);
-						}
-						for(int i = 0; i < N; i++)
-						{
-							for(int j = 0; j < N; j++)
+							for(unsigned int i=0; i<coordAdd.size(); i++)
 							{
-								if(field[i][j] != 0)
+								//check whether the line is not built from 5 and more balls
+								checkOnLine(coordAdd[i][0], coordAdd[i][1]);
+								if(checkOnLine(coordAdd[i][0], coordAdd[i][1])==true)
 								{
-									graphics->DrawImage(ball[field[i][j]-100], (i * Scale)+left_margin, (j * Scale)+top_margin, 0, 0, ballWidth, ballHeight);
+									count_bubbles-=countScore;
+									score+=countScore;
+									digitsScore[0]=score/100;
+									digitsScore[1]=(score-digitsScore[0]*100)/10;
+									digitsScore[2]=score-digitsScore[0]*100-digitsScore[1]*10;
+									redrawScreen();
+									graphics->AnimationDeleteLine(ball[field[coordAdd[i][0]][coordAdd[i][1]]-100], coordCheck, 7*ballWidth , 0, ballWidth, ballHeight, 10);
+									graphics->Flip();
+									for(unsigned int i=0; i<coordCheck.size(); i++)
+									{
+										field[coordCheck[i][0]][coordCheck[i][1]]=0;
+									}
+									coordCheck.clear();
 								}
 							}
+							coordAdd.clear();
 						}
-						for(int i=0; i<3; i++)
-						{
-							graphics->DrawImage(digits, 7*Scale+left_margin+i*24, left_margin, digitsScore[i]*18, 0, 18, 35);
-						}
-						selectBall=false;
-						animationRun=false;
+						redrawScreen();
 						graphics->Flip();
 						GameOverHandle(GameOver());
-					}
-					else
-					{
 						selectBall=false;
-						animationRun=false;
 					}
-				}//else
-			}
-			// если ничего не выбрано
-			else
-			{
-				if(field[(input->GetButtonDownCoords().x-left_margin)/Scale][(input->GetButtonDownCoords().y-top_margin)/Scale]!=0)
+				}
+				else
 				{
-					x=(input->GetButtonDownCoords().x-left_margin)/Scale;// запоминаем координату Х в масиве field
-					y=(input->GetButtonDownCoords().y-top_margin)/Scale;// запоминаем координату У в масиве field
-					createWave(x,y);// пускаем волну с точки (х, у)
-					//------------------------
-					graphics->DrawImage(back,0,0);
-					for(int i=0; i<3; i++)
-					{
-						graphics->DrawImage(nxtTtr, (Scale*3+left_margin)+Scale*i+5, 20, (futureAdding[i]-100)*25, 0, 25, 25);
-					}
-					for(int i = 0; i < N; i++)
-					{
-						for(int j = 0; j < N; j++)
-						{
-							if(field[i][j] != 0)
-							{
-								graphics->DrawImage(ball[field[i][j]-100], (i * Scale)+left_margin, (j * Scale)+top_margin, 0, 0, ballWidth, ballHeight);
-							}
-						}
-					}
-					for(int i=0; i<3; i++)
-					{
-						graphics->DrawImage(digits, 7*Scale+left_margin+i*24, left_margin, digitsScore[i]*18, 0, 18, 35);
-					}
-					graphics->Click_Animation(ball[field[x][y]-100], (x * Scale)+left_margin, (y * Scale)+top_margin, 0, 0, ballWidth, ballHeight, 5);
-					graphics->Flip();
-				
-					//---------------------------------
+					//memorize the new position of the selected ball
 					selectBall=true;
-					animationRun=true;
-					GameOverHandle(GameOver());
+					createWave(currentX,currentY);
+					redrawScreen();
+					graphics->Click_Animation(ball[field[currentX][currentY]-100], (currentX * Scale)+left_margin, (currentY * Scale)+top_margin, 0, 0, ballWidth, ballHeight, 5);
+					graphics->Flip();
+					previousX=currentX;
+					previousY=currentY;
 				}
 			}
 		}
